@@ -1,0 +1,38 @@
+cmake_minimum_required(VERSION 3.15)
+project(AlignmentApp)
+
+set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# Enable folders in VS
+set_property(GLOBAL PROPERTY USE_FOLDERS ON)
+
+# ---- VCPKG Integration ----
+# set(CMAKE_TOOLCHAIN_FILE "C:/Users/temch584/vcpkg/scripts/buildsystems/vcpkg.cmake" CACHE STRING "Vcpkg toolchain")
+
+# ---- Find packages ----
+find_package(Eigen3 REQUIRED)
+find_package(PCL REQUIRED COMPONENTS common io visualization registration kdtree)
+find_package(nlohmann_json CONFIG REQUIRED)
+find_package(nfd CONFIG REQUIRED)
+
+# ---- Your executable ----
+add_executable(AlignmentApp Alignment_Application.cpp)
+
+# ---- Include directories ----
+target_include_directories(AlignmentApp PRIVATE
+    ${PCL_INCLUDE_DIRS}
+    ${EIGEN3_INCLUDE_DIRS}
+    "$ENV{USERPROFILE}/vcpkg/installed/x64-windows/include/happly"  # <- Add happly headers
+)
+
+# ---- Link libraries ----
+target_link_libraries(AlignmentApp PRIVATE
+    Eigen3::Eigen
+    nlohmann_json::nlohmann_json
+    nfd::nfd
+    ${PCL_LIBRARIES}
+)
+
+# Required PCL flags
+add_definitions(${PCL_DEFINITIONS})
